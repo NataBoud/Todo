@@ -18,7 +18,6 @@ export function Header({ onAddTask }) {
         setDescription(event.target.value);
     }
 
-
     return (
         <nav className={styles.header}>
             {/* <h1 className={styles.gradient}>todo app</h1>
@@ -34,7 +33,7 @@ export function Header({ onAddTask }) {
                     onChange={onChangeDescription}
                     />
 
-                <button type='submit'>
+                <button type='submit' disabled={description.trim() === ""}>
                     Créer
                     <AiOutlinePlusCircle size={20}/>
                 </button>
