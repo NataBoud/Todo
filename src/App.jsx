@@ -1,73 +1,48 @@
-import { useEffect, useState } from "react"
-import { Header } from "./components/Header"
-import { Tasks } from "./components/Tasks"
+import { useEffect } from "react";
+import { Header } from "./components/Header";
+import { Tasks } from "./components/Tasks";
+import { useDispatch, useSelector } from 'react-redux';
+import { addTask } from './features/tasks/taskSlice';
 
-const LOCAL_STORAGE_KEY = "todo:savedTasks"
+const LOCAL_STORAGE_KEY = "todo:savedTasks";
 
 function App() {
+  const tasks = useSelector((state) => state.tasks.taskList);
+  const dispatch = useDispatch();
 
-  const [tasks, setTasks] = useState([]);
-
-  // Loal Storage
-  function setTasksAndSave(newTasks) {
-    setTasks(newTasks);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTasks));
-  }
-
-  function loadSavedTasks() {
+  // -----Local Storage
+  useEffect(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    console.log(saved);
     if (saved) {
-      setTasks(JSON.parse(saved));
+      try {
+        const savedTasks = JSON.parse(saved);
+        savedTasks.forEach(task => {
+          dispatch(addTask(task));
+        });
+      } catch (e) {
+        console.error("Error parsing saved tasks from localStorage:", e);
+      }
     }
-  }
+  }, [dispatch]);
 
   useEffect(() => {
-    loadSavedTasks();
-  }, [])
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(tasks));
+  }, [tasks]);
 
-  function addTask(taskDescription) {
-    setTasksAndSave([
-      ...tasks,
-      {
-        id: crypto.randomUUID(),
-        description: taskDescription,
-        isCompleted: false
-      }
-    ]);
-
+  const handleAddTask = (taskDescription) => {
+    dispatch(addTask({
+      id: crypto.randomUUID(),
+      description: taskDescription,
+      isCompleted: false
+    }));
   };
-  console.log(tasks);
-
-  function toggleTaskComletedBuId(taskId) {
-    const newArrayTasks = tasks.map(task => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          isCompleted: !task.isCompleted
-        }
-      }
-      return task;
-    })
-    setTasksAndSave(newArrayTasks);
-  }
-
-  function deleteTaskById(taskId) {
-    const newArrayTasks = tasks.filter(task => task.id !== taskId);
-    setTasksAndSave(newArrayTasks)
-  }
-
 
   return (
     <>
-      <Header onAddTask={addTask} />
-      <Tasks
-        tasksProp={tasks}
-        onCompleteProp={toggleTaskComletedBuId}
-        onDeleteProp={deleteTaskById}
-      />
+      <Header onAddTask={handleAddTask} />
+      <Tasks />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

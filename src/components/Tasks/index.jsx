@@ -1,17 +1,18 @@
+import { useSelector } from 'react-redux';
 import { Task } from '../Task';
-import styles from './tasks.module.css'; 
+import styles from './tasks.module.css';
 
-export function Tasks({ tasksProp, onCompleteProp, onDeleteProp }) {
+export function Tasks() {
+    const tasks = useSelector((state) => state.tasks.taskList);
 
-    const tasksQuantity = tasksProp.length;
-
-    const completedTasks = tasksProp.filter(task => task.isCompleted).length;
+    const tasksQuantity = tasks.length;
+    const completedTasks = tasks.filter(task => task.isCompleted).length;
 
     return (
         <section className={styles.tasks}>
             <div className={styles.header}>
                 <div>
-                    <p>Tâches crées</p>
+                    <p>Tâches créées</p>
                     <span>{tasksQuantity}</span>
                 </div>
                 <div>
@@ -21,16 +22,11 @@ export function Tasks({ tasksProp, onCompleteProp, onDeleteProp }) {
             </div>
 
             <div className={styles.list}>
-                {tasksProp.map(task => (
-                    <Task 
-                        key={task.id} 
-                        taskProp={task}
-                        onCompletePropToTask={onCompleteProp}
-                        onDeletePropToTask={onDeleteProp}
-
-                    />
+                {tasks.map(task => (
+                    <Task key={task.id} taskId={task.id} />
                 ))}
             </div>
         </section>
-    )
+    );
 }
+
