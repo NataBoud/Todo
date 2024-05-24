@@ -4,7 +4,6 @@ import { AiOutlinePlusCircle } from "react-icons/ai";
 import todoLogo from '../../assets/todoLogo.svg';
 
 export function Header({ onAddTask }) {
-
     const [description, setDescription] = useState("");
 
     function handleSubmitTask(event) {
@@ -20,24 +19,20 @@ export function Header({ onAddTask }) {
 
     return (
         <nav className={styles.header}>
-            {/* <h1 className={styles.gradient}>todo app</h1>
-            <h1 className={styles.shadow}>todo app</h1> */}
-            <img src={todoLogo} />
+            <img src={todoLogo} alt="ToDo Logo" />
 
             <form onSubmit={handleSubmitTask} className={styles.newTaskForm}>
-
-                <input 
-                    placeholder='Ajouter une nouvelle tâche...' 
+                <input
+                    placeholder='Ajouter une nouvelle tâche...'
                     type="text"
                     value={description}
                     onChange={onChangeDescription}
-                    />
-
+                />
                 <button type='submit' disabled={description.trim() === ""}>
                     Créer
-                    <AiOutlinePlusCircle size={20}/>
+                    <AiOutlinePlusCircle size={20} />
                 </button>
             </form>
         </nav>
-    )
+    );
 }
